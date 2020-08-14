@@ -12,9 +12,7 @@ library(data.table)
 library(tidyverse)
 library(gganimate)
 
-
-
-# Change in mobility to retail and recreation in BCBS jurisdictions -------
+# Change in mobility in BCBS jurisdictions -------
 
 GoogleMobilityDataset <- data.table(read.csv("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv",
                                       stringsAsFactors = FALSE))
@@ -194,6 +192,58 @@ animate(all_counties_anim_plot,
         height = 400)
 
 
+# Apple Mobility ----------------------------------------------------------
+current_date <- as.Date(format(Sys.Date(), "%Y-%m-%d"))
+date_apple_mobility <- current_date - 2
+apple_mobility_url <- paste0("https://covid19-static.cdn-apple.com/covid19-mobility-data/2014HotfixDev12/v3/en-us/applemobilitytrends-",
+                             date_apple_mobility,".csv")
+
+apple_mobility_data <- data.table(read.csv(apple_mobility_url, 
+                                           stringsAsFactors = FALSE))
+# Unfortunately the following countries/regions below need to be filtered out
+# of the curent code due to the presence of alternative names using scripts that
+# are oriented from right to left (namely, Arabic and Hebrew scripts). These
+# scripts interfere with the way the code reads the numeric data and I could not
+# find a workaround that could be embedded in the graph. When the problem is
+# solved I will upload a new version. Alternatively, users can download the
+# original spreadsheet from the Apple Mobility website, manually remove the
+# name in local script and try loading this into R by switching the command line
+# above from the location in the internet to the location of the CSV file in
+# the local computer.
+apple_mobility_data <- apple_mobility_data %>% filter(!(region %in% c("Egypt",
+                                                                     "Israel",
+                                                                     "Morocco",
+                                                                     "Saudi Arabia",
+                                                                     "United Arab Emirates",
+                                                                     "Cairo",
+                                                                     "Casablanca",
+                                                                     "Dubai",
+                                                                     "Riyadh",
+                                                                     "Tel Aviv",
+                                                                     "Haifa District")))
+
+apple_mobility_data <- apple_mobility_data %>% 
+                        gather("date", "percent_change", 7:ncol(apple_mobility_data)) %>% 
+                        mutate(date = as.Date(substr(date, 2, 11), format = "%Y.%m.%d")) %>% 
+                        mutate(percent_change = as.numeric(percent_change))
+# Note that Apple does not supply the values for 11 and 12 May 2020.
+
+
+# exploring data from a specific country, for example Belgium:
+country_apple_mob <- "Belgium"
+apple_mobility_data %>% 
+  filter(region == country_apple_mob & sub.region == "") %>% 
+  ggplot(aes(x = date, y = percent_change, colour = transportation_type)) +
+  geom_line() +
+  labs(title = "Evolution of mobility by transport type",
+       subtitle = country_apple_mob,
+       y = '% change from baseline',
+       color = "Transportation type",
+       caption = 'Source: Apple Mobility')  +
+  theme(text = element_text(size = 14, colour = "#A60000"), # element_text(family = "Segoe UI", size = 14, colour = "#A60000"),
+        plot.title = element_text(size = 16, face = "bold"),
+        legend.position = "bottom",
+        legend.title = element_text(size = 12))
 
 # Facebook symptoms survey ------------------------------------------------
 
