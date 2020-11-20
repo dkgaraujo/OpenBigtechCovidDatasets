@@ -1,6 +1,5 @@
 library(tidyverse)
 library(pins)
-source("BISlike_graph_theme.R")
 
 containment_measures <- pin("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv") %>% 
   read_csv() %>% 
@@ -95,7 +94,7 @@ containment_measures  %>%
   ggplot(aes(x = Date, y = Index, colour = Region)) +
   geom_smooth(alpha = 0.7, size = 2, se = FALSE) +
   geom_hline(yintercept = 0, colour = "black") +
-  BISlike_graph_theme() +
+  # customized_theme_file() +
   scale_x_date(date_labels = "%b",
                date_breaks = "1 month") +
   scale_colour_manual(values = unname(BIS_dark_colours_Neil_palette)) +
