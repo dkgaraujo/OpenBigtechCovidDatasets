@@ -16,3 +16,5 @@ All users of this code agree to the terms of the respective datasets, reproduced
 [Facebook-University of Maryland World Covid Symptoms Survey](https://covidmap.umd.edu/methodology.html) (Note: this link was the closest I could find to terms of service; general good sense apply)
 
 [Facebook-Carnegie Mellon University US Covid Symptoms Survey](https://cmu-delphi.github.io/delphi-epidata/api/README.html#data-licensing)
+
+Please refer to the Oxford Tracker linked above for their terms and conditions.
