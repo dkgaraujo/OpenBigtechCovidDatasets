@@ -7,14 +7,14 @@ containment_measures <- pin("https://raw.githubusercontent.com/OxCGRT/covid-poli
 
 available_countries <- unique(containment_measures$CountryName)
 
-BCBS_Americas <- c("Argentina",
+SampleCountries_Americas <- c("Argentina",
                    "Brazil",
                    "Canada",
                    "Chile",
                    "Mexico",
                    "United States")
 
-BCBS_Europe <- c("Belgium",
+SampleCountries_Europe <- c("Belgium",
                  "Switzerland",
                  "Germany",
                  "Spain",
@@ -26,7 +26,7 @@ BCBS_Europe <- c("Belgium",
                  "Russia",
                  "Sweden")
 
-BCBS_ROW <- c("United Arab Emirates",
+SampleCountries_ROW <- c("United Arab Emirates",
               "China",
               "Hong Kong",
               "India",
@@ -39,18 +39,18 @@ BCBS_ROW <- c("United Arab Emirates",
               "South Korea",
               "Turkey")
 
-BCBS_all <- c(BCBS_Americas, BCBS_Europe, BCBS_ROW)
+SampleCountries_all <- c(SampleCountries_Americas, SampleCountries_Europe, SampleCountries_ROW)
 
 containment_measures <- containment_measures %>%
-  filter(CountryName %in% BCBS_all & is.na(RegionCode)) %>% 
+  filter(CountryName %in% SampleCountries_all & is.na(RegionCode)) %>% 
   select(-RegionName, -RegionCode) %>% 
   nest(!c(CountryName, CountryCode))
 
 containment_measures <- containment_measures %>% 
   mutate(Region = case_when(
-    CountryName %in% BCBS_Americas ~ "Americas",
-    CountryName %in% BCBS_Europe ~ "Europe",
-    CountryName %in% BCBS_ROW ~ "RoW",
+    CountryName %in% SampleCountries_Americas ~ "Americas",
+    CountryName %in% SampleCountries_Europe ~ "Europe",
+    CountryName %in% SampleCountries_ROW ~ "RoW",
     TRUE ~ NA_character_
   ))
 
@@ -85,7 +85,7 @@ latest_date <- containment_measures  %>%
 
 containment_measures  %>% 
   unnest(containment_index) %>% 
-  filter(Date == max(Date))
+  filter(Date == max(Date)) %>% 
   pull(Date) %>% 
   max()
 
@@ -97,7 +97,6 @@ containment_measures  %>%
   # customized_theme_file() +
   scale_x_date(date_labels = "%b",
                date_breaks = "1 month") +
-  scale_colour_manual(values = unname(BIS_dark_colours_Neil_palette)) +
   labs(title = "Containment measures",
        subtitle = paste("Daily frequency. Data as of", latest_date),
        x = element_blank(),
