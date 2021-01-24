@@ -195,7 +195,7 @@ animate(all_counties_anim_plot,
 # Apple Mobility ----------------------------------------------------------
 current_date <- as.Date(format(Sys.Date(), "%Y-%m-%d"))
 date_apple_mobility <- current_date - 2
-apple_mobility_url <- paste0("https://covid19-static.cdn-apple.com/covid19-mobility-data/2014HotfixDev12/v3/en-us/applemobilitytrends-",
+apple_mobility_url <- paste0("https://covid19-static.cdn-apple.com/covid19-mobility-data/current/v3/en-us/applemobilitytrends-",
                              date_apple_mobility,".csv")
 
 apple_mobility_data <- data.table(read.csv(apple_mobility_url, 
